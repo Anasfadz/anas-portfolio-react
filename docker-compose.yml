@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: anasfadzrin-app:latest
+    container_name: anasfadzrin-portfolio
+    ports:
+      - "8900:80"
+    restart: unless-stopped
