@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { WordsPullUp } from './WordsPullUp'
@@ -6,6 +6,17 @@ import { WordsPullUp } from './WordsPullUp'
 export const Hero: React.FC = () => {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const navItems = ["About", "Projects", "Experience", "Contact"]
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.defaultMuted = true
+      videoRef.current.muted = true
+      videoRef.current.play().catch((err) => {
+        console.warn("Video autoplay failed or was prevented:", err)
+      })
+    }
+  }, [])
 
   return (
     <section className="h-screen w-full relative bg-black p-4 md:p-6 overflow-hidden">
@@ -14,6 +25,7 @@ export const Hero: React.FC = () => {
         
         {/* Background Video */}
         <video
+          ref={videoRef}
           autoPlay
           loop
           muted
@@ -65,7 +77,7 @@ export const Hero: React.FC = () => {
               <WordsPullUp
                 text="Anas Fadzrin"
                 showAsterisk={true}
-                className="font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] text-[26vw] sm:text-[24vw] md:text-[22vw] lg:text-[20vw] xl:text-[19vw] 2xl:text-[20vw]"
+                className="font-medium leading-[0.85] tracking-[-0.07em] text-[#E1E0CC] text-[21vw] sm:text-[20vw] md:text-[16vw] lg:text-[12vw] xl:text-[11vw] 2xl:text-[11vw]"
               />
             </div>
 
@@ -82,7 +94,7 @@ export const Hero: React.FC = () => {
                 className="text-primary/70 text-xs sm:text-sm md:text-base font-normal text-left"
                 style={{ lineHeight: '1.2' }}
               >
-                Anas Fadzrin is a software developer specializing in FPX & Credit Card payment integration, PCI-DSS compliance, and high-performance Laravel & React applications that drive business growth.
+               I am a software developer specializing in FPX & Credit Card payment integration, PCI-DSS compliance, and high-performance Laravel & React applications that drive business growth.
               </motion.p>
 
               <motion.a
