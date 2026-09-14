@@ -9,8 +9,22 @@ module.exports = {
     extend: {
       fontFamily: {
         serif: ['"Instrument Serif"', 'serif'],
+        mono: ['"JetBrains Mono"', '"Ubuntu Mono"', 'monospace'],
       },
       colors: {
+        terminal: {
+          green: "#10b981",
+          cyan: "#38bdf8",
+          amber: "#f59e0b",
+          purple: "#c084fc",
+          red: "#ef4444",
+          dark: "#0a0d12",
+          surface: "#11151c",
+          elevated: "#161b22",
+          border: "#30363d",
+          muted: "#8b949e",
+          text: "#e6edf3",
+        },
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
