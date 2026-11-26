@@ -34,12 +34,132 @@ export function JacketPotatoPuchong() {
   const [orderPlaced, setOrderPlaced] = useState(false);
 
   useEffect(() => {
+    const pageUrl = "https://anasfadzrin.com/jacket-potato-puchong";
+    const pageTitle = "Jacket Potato by Hanna — Jacket Potato Big Mac Puchong";
+    const pageDescription =
+      "Jacket Potato by Hanna in Kampung Kenangan, Puchong. 90-minute cast-iron baked Jacket Potato Big Mac in Small (RM10) & Big (RM18). Pickup or delivery via WhatsApp.";
+    const pageKeywords =
+      "Jacket Potato by Hanna, Jacket Potato Puchong, Jacket Potato Big Mac, Baked Potato Puchong, Kampung Kenangan Puchong, Halal Food Puchong";
+
     const prevTitle = document.title;
-    document.title = "Jacket Potato by Hanna — Jacket Potato Big Mac";
+    const prevLang = document.documentElement.lang;
+    document.title = pageTitle;
+    document.documentElement.lang = lang;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+      const existed = Boolean(el);
+      const prevContent = el?.getAttribute("content") ?? null;
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+      return () => {
+        if (!existed) {
+          el?.remove();
+        } else if (prevContent !== null) {
+          el?.setAttribute("content", prevContent);
+        }
+      };
+    };
+
+    const canonicalEl =
+      document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]') ??
+      (() => {
+        const link = document.createElement("link");
+        link.rel = "canonical";
+        document.head.appendChild(link);
+        return link;
+      })();
+    const prevCanonical = canonicalEl.getAttribute("href");
+    canonicalEl.setAttribute("href", pageUrl);
+
+    const cleanups = [
+      upsertMeta("name", "description", pageDescription),
+      upsertMeta("name", "keywords", pageKeywords),
+      upsertMeta("name", "robots", "index, follow"),
+      upsertMeta("property", "og:type", "restaurant"),
+      upsertMeta("property", "og:url", pageUrl),
+      upsertMeta("property", "og:title", pageTitle),
+      upsertMeta("property", "og:description", pageDescription),
+      upsertMeta("name", "twitter:url", pageUrl),
+      upsertMeta("name", "twitter:title", pageTitle),
+      upsertMeta("name", "twitter:description", pageDescription),
+    ];
+
+    const jsonLdEl = document.createElement("script");
+    jsonLdEl.type = "application/ld+json";
+    jsonLdEl.setAttribute("data-jp-schema", "true");
+    jsonLdEl.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      name: "Jacket Potato by Hanna",
+      url: pageUrl,
+      telephone: "+601126112833",
+      servesCuisine: ["Jacket Potato", "Western", "Halal"],
+      priceRange: "RM10 - RM18",
+      hasMap: LOCATION_URL,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "Kampung Kenangan",
+        addressLocality: "Puchong",
+        addressRegion: "Selangor",
+        postalCode: "47100",
+        addressCountry: "MY",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 3.0287459,
+        longitude: 101.5961807,
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+          opens: "11:30",
+          closes: "22:00",
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Friday", "Saturday", "Sunday"],
+          opens: "11:30",
+          closes: "23:30",
+        },
+      ],
+      hasMenu: {
+        "@type": "Menu",
+        hasMenuSection: {
+          "@type": "MenuSection",
+          name: "Jacket Potato Big Mac",
+          hasMenuItem: [
+            {
+              "@type": "MenuItem",
+              name: "Jacket Potato Big Mac (Small)",
+              offers: { "@type": "Offer", price: "10.00", priceCurrency: "MYR" },
+            },
+            {
+              "@type": "MenuItem",
+              name: "Jacket Potato Big Mac (Big)",
+              offers: { "@type": "Offer", price: "18.00", priceCurrency: "MYR" },
+            },
+          ],
+        },
+      },
+    });
+    document.head.appendChild(jsonLdEl);
+
     return () => {
       document.title = prevTitle;
+      document.documentElement.lang = prevLang;
+      if (prevCanonical) {
+        canonicalEl.setAttribute("href", prevCanonical);
+      }
+      cleanups.forEach((fn) => fn());
+      jsonLdEl.remove();
     };
-  }, []);
+  }, [lang]);
 
   const t = COPY[lang];
   const selectedVariant =
@@ -171,6 +291,7 @@ export function JacketPotatoPuchong() {
         </div>
       </header>
 
+      <main>
       {/* Hero with Scroll-Tilt Showcase */}
       <section id="top" className="jp-hero">
         <div className="jp-container jp-hero__grid">
@@ -382,6 +503,7 @@ export function JacketPotatoPuchong() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* Footer */}
       <footer className="jp-footer">
