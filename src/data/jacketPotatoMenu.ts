@@ -134,7 +134,7 @@ export const COPY = {
     footer: {
       desc: "Slow-baked cast-iron Jacket Potato Big Mac in Puchong, crafted fresh daily in Small (RM10) and Big (RM18).",
       hoursTitle: "Opening Hours",
-      hours: "Mon – Thu: 11:30 AM – 10:00 PM\nFri – Sun: 11:30 AM – 11:30 PM",
+      hours: "Sat – Sun: 11:30 AM – 11:30 PM\nMon – Fri: Closed",
       pickupTitle: "Kitchen & Delivery",
       pickup: "Kampung Kenangan, 47100 Puchong, Selangor\nHot delivery in 25 mins · 100% Halal Ingredients",
       mapCta: "View on Google Maps ↗",
@@ -155,6 +155,9 @@ export const COPY = {
       addressError: "Please enter your delivery address to continue.",
       subtotal: "Subtotal",
       checkout: "Send Order to WhatsApp",
+      closedNotice:
+        "We are only open on Saturday & Sunday. Please come back this weekend to place your order!",
+      closedButton: "Open Saturday – Sunday Only",
       confirmedTitle: "Order Sent to WhatsApp!",
       confirmedBody:
         "Please complete sending the pre-filled WhatsApp message to 011-2611 2833 so we can start baking your Jacket Potato Big Mac.",
@@ -259,7 +262,7 @@ export const COPY = {
     footer: {
       desc: "Kentang Jaket Big Mac bakar besi tuang di Puchong, disediakan segar setiap hari dalam saiz Kecil (RM10) dan Besar (RM18).",
       hoursTitle: "Waktu Operasi",
-      hours: "Isn – Kha: 11:30 PG – 10:00 MLM\nJum – Ahd: 11:30 PG – 11:30 MLM",
+      hours: "Sab – Ahd: 11:30 PG – 11:30 MLM\nIsn – Jum: Tutup",
       pickupTitle: "Dapur & Penghantaran",
       pickup: "Kampung Kenangan, 47100 Puchong, Selangor\nPenghantaran panas 25 min · 100% Bahan Halal",
       mapCta: "Lihat di Google Maps ↗",
@@ -280,6 +283,9 @@ export const COPY = {
       addressError: "Sila masukkan alamat penghantaran untuk meneruskan.",
       subtotal: "Jumlah Kecil",
       checkout: "Hantar Pesanan ke WhatsApp",
+      closedNotice:
+        "Kami hanya dibuka pada hari Sabtu & Ahad. Sila datang semula hujung minggu ini untuk membuat pesanan!",
+      closedButton: "Dibuka Sabtu – Ahad Sahaja",
       confirmedTitle: "Pesanan Dihantar ke WhatsApp!",
       confirmedBody:
         "Sila tekan hantar pada mesej WhatsApp ke 011-2611 2833 supaya kami boleh mula menyediakan Kentang Jaket Big Mac anda.",

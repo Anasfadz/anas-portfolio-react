@@ -18,6 +18,19 @@ interface BagItem {
   qty: number;
 }
 
+function isWeekendInMalaysia(): boolean {
+  try {
+    const day = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Kuala_Lumpur",
+      weekday: "short",
+    }).format(new Date());
+    return day === "Sat" || day === "Sun";
+  } catch {
+    const day = new Date().getDay();
+    return day === 0 || day === 6;
+  }
+}
+
 export function JacketPotatoPuchong() {
   const [lang, setLang] = useState<Lang>("en");
   const [selectedVariantId, setSelectedVariantId] =
@@ -117,13 +130,7 @@ export function JacketPotatoPuchong() {
       openingHoursSpecification: [
         {
           "@type": "OpeningHoursSpecification",
-          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
-          opens: "11:30",
-          closes: "22:00",
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: ["Friday", "Saturday", "Sunday"],
+          dayOfWeek: ["Saturday", "Sunday"],
           opens: "11:30",
           closes: "23:30",
         },
@@ -195,7 +202,12 @@ export function JacketPotatoPuchong() {
     );
   };
 
+  const isOpenToday = isWeekendInMalaysia();
+
   const handleCheckout = () => {
+    if (!isOpenToday) {
+      return;
+    }
     const trimmedAddress = address.trim();
     if (fulfillment === "pickup" && !pickupTime) {
       setPickupTimeError(true);
@@ -744,6 +756,12 @@ export function JacketPotatoPuchong() {
                   )}
                 </div>
 
+                {!isOpenToday && (
+                  <p className="jp-closed-notice" role="status">
+                    {t.drawer.closedNotice}
+                  </p>
+                )}
+
                 <div className="jp-drawer__total">
                   <span>{t.drawer.subtotal}</span>
                   <span>RM{bagSubtotal.toFixed(2)}</span>
@@ -752,9 +770,12 @@ export function JacketPotatoPuchong() {
                   type="button"
                   className="jp-btn-primary"
                   style={{ width: "100%" }}
+                  disabled={!isOpenToday}
                   onClick={handleCheckout}
                 >
-                  {t.drawer.checkout} · RM{bagSubtotal.toFixed(2)}
+                  {isOpenToday
+                    ? `${t.drawer.checkout} · RM${bagSubtotal.toFixed(2)}`
+                    : t.drawer.closedButton}
                 </button>
               </div>
             )}
