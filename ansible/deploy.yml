@@ -1,0 +1,72 @@
+---
+- name: Deploy Anas Portfolio to RKE2 Kubernetes
+  hosts: rke2_servers
+  gather_facts: false
+
+  vars:
+    app_subpath: Docker/anas-portfolio-react
+    image_name: anasfadzrin-app
+    image_tag: latest
+    tar_filename: anasfadzrin-app.tar
+    rke2_ctr_bin: /var/lib/rancher/rke2/bin/ctr
+    containerd_sock: /run/k3s/containerd/containerd.sock
+    containerd_namespace: k8s.io
+    k8s_deployment: anasfadzrin-app-deployment
+    k8s_namespace: default
+
+  tasks:
+    - name: Resolve user home directory
+      ansible.builtin.shell: printf '%s' "$HOME"
+      register: remote_home
+      changed_when: false
+
+    - name: Set resolved app directory
+      ansible.builtin.set_fact:
+        resolved_app_dir: "{{ app_dir | default(remote_home.stdout + '/' + app_subpath, true) }}"
+        resolved_tar_path: "{{ (app_dir | default(remote_home.stdout + '/' + app_subpath, true)) + '/' + tar_filename }}"
+
+    - name: Pull latest code from Git
+      ansible.builtin.command: git pull
+      args:
+        chdir: "{{ resolved_app_dir }}"
+      register: git_pull
+      changed_when: "'Already up to date.' not in git_pull.stdout"
+
+    - name: Build Docker image
+      ansible.builtin.command: >
+        docker build -t {{ image_name }}:{{ image_tag }} .
+      args:
+        chdir: "{{ resolved_app_dir }}"
+      changed_when: true
+
+    - name: Save and import image into RKE2 containerd
+      block:
+        - name: Save Docker image to tarball
+          ansible.builtin.command: >
+            docker save {{ image_name }}:{{ image_tag }} -o {{ resolved_tar_path }}
+          args:
+            chdir: "{{ resolved_app_dir }}"
+          changed_when: true
+
+        - name: Import tarball into RKE2 containerd (k8s.io namespace)
+          ansible.builtin.command: >
+            {{ rke2_ctr_bin }} --address {{ containerd_sock }}
+            -n {{ containerd_namespace }}
+            images import {{ resolved_tar_path }}
+          become: true
+          changed_when: true
+      always:
+        - name: Remove temporary image tarball
+          ansible.builtin.file:
+            path: "{{ resolved_tar_path }}"
+            state: absent
+
+    - name: Restart Kubernetes deployment
+      ansible.builtin.command: >
+        kubectl rollout restart deployment {{ k8s_deployment }} -n {{ k8s_namespace }}
+      changed_when: true
+
+    - name: Wait for rollout to complete
+      ansible.builtin.command: >
+        kubectl rollout status deployment {{ k8s_deployment }} -n {{ k8s_namespace }} --timeout=180s
+      changed_when: false
