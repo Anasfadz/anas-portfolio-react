@@ -8,8 +8,15 @@ import { Features } from './components/Features'
 import { ExperienceTimeline } from './components/ExperienceTimeline'
 import { ContactCTA } from './components/ContactCTA'
 import { Footer } from './components/Footer'
+import { JacketPotatoPuchong } from './pages/JacketPotatoPuchong'
+
+const normalizePath = (path: string) =>
+  path.replace(/\/+$/, '') || '/'
 
 function App() {
+  const [pathname, setPathname] = useState<string>(() =>
+    typeof window !== 'undefined' ? normalizePath(window.location.pathname) : '/'
+  )
   const [isTerminalOpen, setIsTerminalOpen] = useState(false)
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -23,6 +30,12 @@ function App() {
   })
 
   useEffect(() => {
+    const onPopState = () => setPathname(normalizePath(window.location.pathname))
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark')
       localStorage.setItem('theme', 'dark')
@@ -31,6 +44,10 @@ function App() {
       localStorage.setItem('theme', 'light')
     }
   }, [isDark])
+
+  if (pathname === '/jacket-potato-puchong') {
+    return <JacketPotatoPuchong />
+  }
 
   const toggleTerminal = () => {
     setIsTerminalOpen((prev) => !prev)
